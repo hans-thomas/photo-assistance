@@ -109,6 +109,7 @@ void MainWindow::on_runBtn_clicked()
         }
 
         ack();
+        QCoreApplication::processEvents();
     }
 
     log("Processing finished.");
