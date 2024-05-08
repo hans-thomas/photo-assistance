@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QImage>
 #include <QtDebug>
+#include <QThread>
 
 const QString FOLDER;
 
@@ -26,7 +27,14 @@ void MainWindow::log(QString context)
     ui->logTE->append(context);
 }
 
-QImage MainWindow::resize(QString file, int percent)
+void MainWindow::ack()
+{
+    QTextEdit *myTextEdit = ui->logTE;
+    myTextEdit->moveCursor (QTextCursor::End);
+    myTextEdit->insertPlainText ("Done.");
+}
+
+QString MainWindow::resize(QString file, int percent)
 {
     QImage img(file);
 
@@ -38,7 +46,9 @@ QImage MainWindow::resize(QString file, int percent)
     int newHeight = h * ratio;
     QImage resizedImg = img.scaled(newWidth, newHeight, Qt::KeepAspectRatio);
 
-    return resizedImg;
+    resizedImg.save(file,nullptr,100);
+
+    return file;
 }
 
 QString MainWindow::getTargetFolder()
@@ -72,26 +82,35 @@ void MainWindow::on_runBtn_clicked()
 
     directory.mkdir("edited");
 
+    log("Processing started.");
+
     foreach(QString fileName, fileNames)
     {
         log("The "+fileName+" is processing...");
 
-        QImage file(directory.absoluteFilePath(fileName));
-        qsizetype fileSize;
+        QString path = directory.absolutePath()+"/edited/"+fileName;
+        QFile::copy(directory.absoluteFilePath(fileName),path);
+        qint64 fileSize;
+
         while(true){
-            fileSize = file.sizeInBytes();
+            QFile file(path);
+
+            fileSize = file.size();
             if(fileSize >= 818176){ // ~799kb
-                file = resize(directory.absoluteFilePath(fileName), 90);
+                path = resize(path, 90);
             }else if(fileSize <= 308224){ // 301kb
-                file = resize(directory.absoluteFilePath(fileName), 110);
+                path = resize(path, 110);
             }else{
                 break;
             }
+
+            QThread::msleep(100);  // Delay of 250 milliseconds
+            file.close();
         }
 
-        file.save(directory.absolutePath()+"/edited/"+fileName);
-
-        log("The "+fileName+" processed.");
+        ack();
     }
+
+    log("Processing finished.");
 }
 

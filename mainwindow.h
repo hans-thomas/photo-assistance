@@ -20,11 +20,12 @@ public:
     ~MainWindow();
 
     void log(QString context);
+    void ack();
 
     QString getTargetFolder();
     void setTargetFolder(QString path);
 
-    QImage resize(QString file, int percent);
+    QString resize(QString file, int percent);
 
 private slots:
     void on_openBtn_clicked();
