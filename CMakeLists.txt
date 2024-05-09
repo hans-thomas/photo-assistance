@@ -38,6 +38,7 @@ else()
     else()
         add_executable(photo-assistance
             ${PROJECT_SOURCES}
+            sleeper.h
         )
     endif()
 endif()
