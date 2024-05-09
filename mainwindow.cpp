@@ -5,7 +5,7 @@
 #include <QFile>
 #include <QImage>
 #include <QtDebug>
-#include <QThread>
+#include "sleeper.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -102,7 +102,7 @@ void MainWindow::on_runBtn_clicked()
                 break;
             }
 
-            QThread::msleep(100);  // Delay of 100 milliseconds
+            Sleeper::msleep(100);
             file.close();
         }
 
