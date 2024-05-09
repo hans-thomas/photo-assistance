@@ -7,8 +7,6 @@
 #include <QtDebug>
 #include <QThread>
 
-const QString FOLDER;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -104,7 +102,7 @@ void MainWindow::on_runBtn_clicked()
                 break;
             }
 
-            QThread::msleep(100);  // Delay of 250 milliseconds
+            QThread::msleep(100);  // Delay of 100 milliseconds
             file.close();
         }
 
